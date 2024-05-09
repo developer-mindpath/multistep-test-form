@@ -6,7 +6,7 @@ export type User = {
   email: string;
   password: string;
   profilePic: File;
-  age: string;
+  age: number;
   phoneNo: string;
   occupation: string;
   bio: string;
@@ -15,44 +15,43 @@ export type User = {
   privacypolicyAccepted: boolean;
 };
 
-export type FormDataType = {
-  activeStep: number;
-  formData: User;
-};
-
-export const initialFormData: FormDataType = {
-  activeStep: 1,
-  formData: {
-    name: "",
-    lastname: "",
-    email: "",
-    password: "",
-    profilePic: {} as File,
-    age: "",
-    phoneNo: "",
-    occupation: "",
-    bio: "",
-    allowSecurityEmail: false,
-    allowMarketingMail: false,
-    privacypolicyAccepted: false,
-  },
+export const initialFormData: User = {
+  name: "",
+  lastname: "",
+  email: "",
+  password: "",
+  profilePic: {} as File,
+  age: 18,
+  phoneNo: "",
+  occupation: "",
+  bio: "",
+  allowSecurityEmail: false,
+  allowMarketingMail: false,
+  privacypolicyAccepted: false,
 };
 
 export interface UserContextProps {
-  propertyForm: FormDataType;
-  updatePropertyForm: (property: FormDataType) => void;
+  propertyForm: User;
+  updatePropertyForm: (property: User) => void;
 }
 
+/**
+ * Creating context to store form values
+ */
 export const PropertyFormContext = createContext<UserContextProps | null>({
   propertyForm: initialFormData,
   updatePropertyForm: () => null,
 });
 
+/**
+ * Form context provider , wrap this aound the compomponent to extract form values and update them
+ * @param {ReactNode} param0
+ * @returns {ReactElement}
+ */
 export function FormContextProvider({ children }: { children: ReactNode }) {
-  const [propertyForm, setPropertyForm] =
-    useState<FormDataType>(initialFormData);
+  const [propertyForm, setPropertyForm] = useState<User>(initialFormData);
 
-  const updatePropertyForm = (values: FormDataType) => {
+  const updatePropertyForm = (values: User) => {
     setPropertyForm({ ...propertyForm, ...values });
   };
 

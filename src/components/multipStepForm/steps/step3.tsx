@@ -9,21 +9,24 @@ import {
 } from "@/components/UI/form";
 import { Input } from "@/components/UI/input";
 import { Textarea } from "@/components/UI/textarea";
-
 import { useFormContext } from "@/context/formContext/formHook";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/UI/avatar";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { getNameInitials, getObjecturl } from "@/lib/utils";
 import { useStepper } from "@/components/UI/stepper";
 
-function Step3() {
+/**
+ * Step 3 of the form has profile pic and bio
+ * @returns {ReactElement}
+ */
+function Step3(): ReactElement {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const [profileImage, setProfileImage] = useState<File>(
-    propertyForm.formData.profilePic
+    propertyForm.profilePic
   );
   const { nextStep, prevStep } = useStepper();
 
@@ -36,15 +39,15 @@ function Step3() {
     resolver: zodResolver(newUserFormSchema),
     mode: "onChange",
     defaultValues: {
-      bio: propertyForm.formData.bio,
-      profilePic: propertyForm.formData.profilePic,
+      bio: propertyForm.bio,
+      profilePic: propertyForm.profilePic,
     },
   });
 
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
     formContext.updatePropertyForm({
-      activeStep: propertyForm.activeStep + 1,
-      formData: { ...propertyForm.formData, ...values },
+      ...propertyForm,
+      ...values,
     });
     nextStep();
   }
@@ -59,10 +62,7 @@ function Step3() {
           <Avatar className="w-44 h-44">
             <AvatarImage src={getObjecturl(profileImage)} />
             <AvatarFallback>
-              {getNameInitials(
-                propertyForm.formData.name,
-                propertyForm.formData.lastname
-              )}
+              {getNameInitials(propertyForm.name, propertyForm.lastname)}
             </AvatarFallback>
           </Avatar>
         </div>

@@ -6,10 +6,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/UI/form";
-import { Input } from "@/components/UI/input";
-import { Textarea } from "@/components/UI/textarea";
 
 import { useFormContext } from "@/context/formContext/formHook";
 import { z } from "zod";
@@ -21,14 +18,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useStepper } from "@/components/UI/stepper";
 
+/**
+ * Step 4 of the form has email notificatio nand privacy policy acceptance
+ * @returns {ReactElement}
+ */
 function Step4() {
-  // YOU NEED TO IMPORT THE CONTEXT FIRST
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const router = useRouter();
-  const { nextStep, prevStep } = useStepper();
+  const { prevStep } = useStepper();
 
-  // STEP 1: Defining the form schema👇🏽
   const newUserFormSchema = z.object({
     allowSecurityEmail: z.boolean(),
     allowMarketingMail: z.boolean(),
@@ -37,31 +36,30 @@ function Step4() {
     }),
   });
 
-  // STEP 2: Defining your form.
   const stepFourForm = useForm<z.infer<typeof newUserFormSchema>>({
     resolver: zodResolver(newUserFormSchema),
     mode: "onChange",
     defaultValues: {
-      allowSecurityEmail: propertyForm.formData.allowSecurityEmail,
-      allowMarketingMail: propertyForm.formData.allowMarketingMail,
-      privacypolicyAccepted: propertyForm.formData.privacypolicyAccepted,
+      allowSecurityEmail: propertyForm.allowSecurityEmail,
+      allowMarketingMail: propertyForm.allowMarketingMail,
+      privacypolicyAccepted: propertyForm.privacypolicyAccepted,
     },
   });
 
-  // STEP 3: Defining the submit function
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
     formContext.updatePropertyForm({
-      activeStep: propertyForm.activeStep,
-      formData: { ...propertyForm.formData, ...values },
+      ...propertyForm,
+      ...values,
     });
 
     // we can call an api here and submit the data
     // for now we will store it in local storage
     localStorage.setItem(
       "formData",
-      JSON.stringify({ ...propertyForm.formData, ...values })
+      JSON.stringify({ ...propertyForm, ...values })
     );
 
+    // Redirect to success page
     router.push("/success");
   }
 

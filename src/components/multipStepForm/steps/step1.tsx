@@ -2,7 +2,6 @@ import { Button } from "@/components/UI/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,8 +13,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStepper } from "@/components/UI/stepper";
+import { ReactElement } from "react";
 
-function Step1() {
+/**
+ * Step 1 of the form has name lastname , password , confirm password field
+ * @returns {ReactElement}
+ */
+function Step1(): ReactElement {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const { nextStep } = useStepper();
@@ -46,9 +50,9 @@ function Step1() {
     resolver: zodResolver(newUserFormSchema),
     mode: "onChange",
     defaultValues: {
-      name: propertyForm.formData.name,
-      lastname: propertyForm.formData.lastname,
-      password: propertyForm.formData.password,
+      name: propertyForm.name,
+      lastname: propertyForm.lastname,
+      password: propertyForm.password,
       confirmPassword: "",
     },
   });
@@ -56,8 +60,8 @@ function Step1() {
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
     const { confirmPassword, ...updatedValue } = values;
     formContext.updatePropertyForm({
-      activeStep: propertyForm.activeStep + 1,
-      formData: { ...propertyForm.formData, ...updatedValue },
+      ...propertyForm,
+      ...updatedValue,
     });
     nextStep();
   }

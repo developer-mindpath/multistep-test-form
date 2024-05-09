@@ -1,5 +1,9 @@
 import { Skeleton } from "@/components/UI/skeleton";
 
+/**
+ * Loading component for each step shows till particular steps load
+ * @returns
+ */
 function StepLoading() {
   return (
     <div className="h-2/3 p-2 max-sm:h-auto w-full bg-white">

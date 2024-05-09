@@ -3,8 +3,14 @@
 import { User } from "@/context/formContext/formContext";
 import { getNameInitials, getObjecturl } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { ReactElement } from "react";
 
-function Success() {
+/**
+ * Success page to redirect after form submission
+ * @returns {ReactElement}
+ */
+function Success(): ReactElement {
+  // NOTE - This page can also be made server if we extract data from api for fast response time
   const formData: User = JSON.parse(localStorage.getItem("formData") ?? "");
   return (
     <div className="bg-slate-700 h-screen flex justify-center items-center">

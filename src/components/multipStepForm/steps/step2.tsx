@@ -22,16 +22,20 @@ import {
   SelectValue,
 } from "@/components/UI/select";
 import { useStepper } from "@/components/UI/stepper";
+import { type ReactElement } from "react";
 
-function Step2() {
+/**
+ * Step 2 of the form has email , age , phoneno , occupation
+ * @returns {ReactElement}
+ */
+function Step2(): ReactElement {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const { nextStep, prevStep } = useStepper();
 
   const newUserFormSchema = z.object({
     email: z.string().email("email should be in format user@example.com"),
-    //TODO - fix this
-    age: z.string().min(1, "age must be grater than 18"),
+    age: z.number().min(18, "age must be greater than 18"),
     phoneNo: z.string().min(10, "must be atleast 10 digits"),
     occupation: z.string({
       required_error: "Please select an occupation to continue",
@@ -42,17 +46,17 @@ function Step2() {
     resolver: zodResolver(newUserFormSchema),
     mode: "onChange",
     defaultValues: {
-      email: propertyForm.formData.email,
-      age: propertyForm.formData.age,
-      phoneNo: propertyForm.formData.phoneNo,
-      occupation: propertyForm.formData.occupation,
+      email: propertyForm.email,
+      age: propertyForm.age,
+      phoneNo: propertyForm.phoneNo,
+      occupation: propertyForm.occupation,
     },
   });
 
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
     formContext.updatePropertyForm({
-      activeStep: propertyForm.activeStep + 1,
-      formData: { ...propertyForm.formData, ...values },
+      ...propertyForm,
+      ...values,
     });
     nextStep();
   }
@@ -87,7 +91,13 @@ function Step2() {
               <FormLabel>Age</FormLabel>
               <FormMessage />
               <FormControl>
-                <Input type="number" {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(event) => {
+                    field.onChange(+event.target.value);
+                  }}
+                />
               </FormControl>
             </FormItem>
           )}
