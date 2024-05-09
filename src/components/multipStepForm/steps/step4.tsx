@@ -18,11 +18,13 @@ import { useForm } from "react-hook-form";
 import { Switch } from "@/components/UI/switch";
 import { Checkbox } from "@/components/UI/checkbox";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Step4() {
   // YOU NEED TO IMPORT THE CONTEXT FIRST
   const formContext = useFormContext();
   const { propertyForm } = formContext;
+  const router = useRouter();
 
   // STEP 1: Defining the form schema👇🏽
   const newUserFormSchema = z.object({
@@ -47,11 +49,18 @@ function Step4() {
   // STEP 3: Defining the submit function
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
     formContext.updatePropertyForm({
-      activeStep: propertyForm.activeStep + 1,
+      activeStep: propertyForm.activeStep,
       formData: { ...propertyForm.formData, ...values },
     });
 
-    // TODO - forward to another route and show data there
+    // we can call an api here and submit the data
+    // for now we will store it in local storage
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({ ...propertyForm.formData, ...values })
+    );
+
+    router.push("/success");
   }
 
   const prevStep = () => {
@@ -147,7 +156,7 @@ function Step4() {
             />
           </div>
         </div>
-        <div className="py-10 space-x-8">
+        <div className="py-10 space-x-8 flex justify-between">
           <Button type="button" onClick={prevStep}>
             Prev
           </Button>

@@ -2,7 +2,6 @@ import { Button } from "@/components/UI/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,6 +14,7 @@ import { useFormContext } from "@/context/formContext/formHook";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/UI/avatar";
 
 function Step3() {
   // YOU NEED TO IMPORT THE CONTEXT FIRST
@@ -37,8 +37,20 @@ function Step3() {
     },
   });
 
+  const getObjecturl = (value: any) => {
+    let binaryData = [];
+    binaryData.push(value);
+    return window.URL.createObjectURL(
+      new Blob(binaryData, { type: "application/zip" })
+    );
+  };
+
   // STEP 3: Defining the submit function
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
+    const updateValue = {
+      ...values,
+      profilePic: getObjecturl(values.profilePic),
+    };
     formContext.updatePropertyForm({
       activeStep: propertyForm.activeStep + 1,
       formData: { ...propertyForm.formData, ...values },
@@ -56,9 +68,14 @@ function Step3() {
     <Form {...stepThreeForm}>
       <form
         onSubmit={stepThreeForm.handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow space-y-8 w-[468px] max-sm:w-[90vw]"
+        className="bg-white p-6 rounded-lg shadow space-y-8 w-[468px] max-sm:w-[90vw] "
       >
-        {/* // TODO - add avatar here */}
+        <div className="flex justify-center items-center">
+          <Avatar className="w-44 h-44">
+            <AvatarImage src={getObjecturl(propertyForm.formData.profilePic)} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
         <FormField
           name="profilePic"
           control={stepThreeForm.control}
@@ -67,7 +84,10 @@ function Step3() {
               <FormLabel>Profile Pic</FormLabel>
               <FormMessage />
               <FormControl>
-                <Input {...field} />
+                <Input
+                  type="file"
+                  {...field}
+                />
               </FormControl>
             </FormItem>
           )}
