@@ -5,7 +5,7 @@ export type User = {
   lastname: string;
   email: string;
   password: string;
-  profilePic: string;
+  profilePic: File;
   age: string;
   phoneNo: string;
   occupation: string;
@@ -27,7 +27,7 @@ export const initialFormData: FormDataType = {
     lastname: "",
     email: "",
     password: "",
-    profilePic: "",
+    profilePic: {} as File,
     age: "",
     phoneNo: "",
     occupation: "",

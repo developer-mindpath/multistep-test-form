@@ -21,10 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/UI/select";
+import { useStepper } from "@/components/UI/stepper";
 
 function Step2() {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
+  const { nextStep, prevStep } = useStepper();
 
   const newUserFormSchema = z.object({
     email: z.string().email("email should be in format user@example.com"),
@@ -52,20 +54,14 @@ function Step2() {
       activeStep: propertyForm.activeStep + 1,
       formData: { ...propertyForm.formData, ...values },
     });
+    nextStep();
   }
-
-  const prevStep = () => {
-    formContext.updatePropertyForm({
-      ...propertyForm,
-      activeStep: propertyForm.activeStep - 1,
-    });
-  };
 
   return (
     <Form {...stepTwoForm}>
       <form
         onSubmit={stepTwoForm.handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow space-y-8 w-96 max-sm:w-[90vw]"
+        className="bg-white p-6 rounded-lg shadow space-y-8 w-full"
       >
         <FormField
           name="email"

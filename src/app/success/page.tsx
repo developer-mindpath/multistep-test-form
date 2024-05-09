@@ -1,24 +1,24 @@
 "use client";
 
 import { User } from "@/context/formContext/formContext";
-import Image from "next/image";
+import { getNameInitials, getObjecturl } from "@/lib/utils";
+import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 
 function Success() {
   const formData: User = JSON.parse(localStorage.getItem("formData") ?? "");
   return (
     <div className="bg-slate-700 h-screen flex justify-center items-center">
-      <div className="w-[90vw] bg-white shadow-xl border-0 border-lg flex flex-col p-4">
+      <div className="w-[90vw] max-sm:h-[90vh] bg-white shadow-xl border-0 border-lg flex flex-col p-4">
         <div className="w-full flex justify-center">
           <h3 className="text-xl font-bold">Form Submitted Successfully</h3>
         </div>
         <div className="w-full flex justify-center py-2">
-          <img
-            // width={24}
-            // height={24}
-            className="w-12 h-12 rounded-full border-0 object-contain"
-            src={formData.profilePic}
-            alt="profile pic"
-          />
+          <Avatar className="w-36 h-36">
+            <AvatarImage src={getObjecturl(formData.profilePic)} />
+            <AvatarFallback>
+              {getNameInitials(formData.name, formData.lastname)}
+            </AvatarFallback>
+          </Avatar>
         </div>
         <h6 className="py-2">Name : {formData.name}</h6>
         <h6 className="py-2">LastName : {formData.lastname}</h6>
@@ -28,13 +28,13 @@ function Success() {
         <h6 className="py-2">age : {formData.age}</h6>
         <h6 className="py-2">bio :{formData.bio}</h6>
         <h6 className="py-2">
-          allow Marketing Mail :{formData.allowMarketingMail}
+          allow Marketing Mail :{`${formData.allowMarketingMail}`}
         </h6>
         <h6 className="py-2">
-          allow Security Email{formData.allowSecurityEmail}
+          allow Security Email{`${formData.allowSecurityEmail}`}
         </h6>
         <h6 className="py-2">
-          Privacy Policy Accepted{formData.privacypolicyAccepted}
+          Privacy Policy Accepted{`${formData.privacypolicyAccepted}`}
         </h6>
       </div>
     </div>

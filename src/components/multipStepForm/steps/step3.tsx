@@ -15,19 +15,23 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/UI/avatar";
+import { useState } from "react";
+import { getNameInitials, getObjecturl } from "@/lib/utils";
+import { useStepper } from "@/components/UI/stepper";
 
 function Step3() {
-  // YOU NEED TO IMPORT THE CONTEXT FIRST
   const formContext = useFormContext();
   const { propertyForm } = formContext;
+  const [profileImage, setProfileImage] = useState<File>(
+    propertyForm.formData.profilePic
+  );
+  const { nextStep, prevStep } = useStepper();
 
-  // STEP 1: Defining the form schema👇🏽
   const newUserFormSchema = z.object({
     bio: z.string(),
-    profilePic: z.string({ required_error: "please upload a profile pic" }),
+    profilePic: z.any({ required_error: "please upload a profile pic" }),
   });
 
-  // STEP 2: Defining your form.
   const stepThreeForm = useForm<z.infer<typeof newUserFormSchema>>({
     resolver: zodResolver(newUserFormSchema),
     mode: "onChange",
@@ -37,43 +41,29 @@ function Step3() {
     },
   });
 
-  const getObjecturl = (value: any) => {
-    let binaryData = [];
-    binaryData.push(value);
-    return window.URL.createObjectURL(
-      new Blob(binaryData, { type: "application/zip" })
-    );
-  };
-
-  // STEP 3: Defining the submit function
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
-    const updateValue = {
-      ...values,
-      profilePic: getObjecturl(values.profilePic),
-    };
     formContext.updatePropertyForm({
       activeStep: propertyForm.activeStep + 1,
       formData: { ...propertyForm.formData, ...values },
     });
+    nextStep();
   }
-
-  const prevStep = () => {
-    formContext.updatePropertyForm({
-      ...propertyForm,
-      activeStep: propertyForm.activeStep - 1,
-    });
-  };
 
   return (
     <Form {...stepThreeForm}>
       <form
         onSubmit={stepThreeForm.handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow space-y-8 w-[468px] max-sm:w-[90vw] "
+        className="bg-white p-6 rounded-lg shadow space-y-8 w-full"
       >
         <div className="flex justify-center items-center">
           <Avatar className="w-44 h-44">
-            <AvatarImage src={getObjecturl(propertyForm.formData.profilePic)} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={getObjecturl(profileImage)} />
+            <AvatarFallback>
+              {getNameInitials(
+                propertyForm.formData.name,
+                propertyForm.formData.lastname
+              )}
+            </AvatarFallback>
           </Avatar>
         </div>
         <FormField
@@ -87,6 +77,12 @@ function Step3() {
                 <Input
                   type="file"
                   {...field}
+                  onChange={(event) => {
+                    if (!event || !event.target || !event.target.files) return;
+                    setProfileImage(event.target.files[0]);
+                    field.onChange(event);
+                  }}
+                  value={field.value.path}
                 />
               </FormControl>
             </FormItem>

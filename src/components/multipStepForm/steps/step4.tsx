@@ -19,12 +19,14 @@ import { Switch } from "@/components/UI/switch";
 import { Checkbox } from "@/components/UI/checkbox";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useStepper } from "@/components/UI/stepper";
 
 function Step4() {
   // YOU NEED TO IMPORT THE CONTEXT FIRST
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const router = useRouter();
+  const { nextStep, prevStep } = useStepper();
 
   // STEP 1: Defining the form schema👇🏽
   const newUserFormSchema = z.object({
@@ -62,13 +64,6 @@ function Step4() {
 
     router.push("/success");
   }
-
-  const prevStep = () => {
-    formContext.updatePropertyForm({
-      ...propertyForm,
-      activeStep: propertyForm.activeStep - 1,
-    });
-  };
 
   return (
     <Form {...stepFourForm}>

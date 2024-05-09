@@ -13,18 +13,27 @@ import { useFormContext } from "@/context/formContext/formHook";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useStepper } from "@/components/UI/stepper";
 
 function Step1() {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
+  const { nextStep } = useStepper();
+
+  const passwordValidation = new RegExp(
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
+  );
 
   const newUserFormSchema = z
     .object({
-      name: z.string().min(3, "should be east 3 characters"),
-      lastname: z.string().min(3, "should be east 3 characters"),
+      name: z.string().min(3, "should be atleast 3 characters"),
+      lastname: z.string().min(3, "should be atleast 3 characters"),
       password: z
         .string()
-        .min(8, "at least 8 characteres")
+        .regex(
+          passwordValidation,
+          "Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character required"
+        )
         .max(30, "max 30 characters"),
       confirmPassword: z.string(),
     })
@@ -45,20 +54,19 @@ function Step1() {
   });
 
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
-    console.log("values: ", values);
     const { confirmPassword, ...updatedValue } = values;
-    console.log("updatedValue: ", updatedValue);
     formContext.updatePropertyForm({
       activeStep: propertyForm.activeStep + 1,
       formData: { ...propertyForm.formData, ...updatedValue },
     });
+    nextStep();
   }
 
   return (
     <Form {...stepOneForm}>
       <form
         onSubmit={stepOneForm.handleSubmit(onSubmit)}
-        className="bg-white p-6 rounded-lg shadow space-y-8 flex flex-col w-96 max-sm:w-[90vw]"
+        className="bg-white p-6 rounded-lg shadow space-y-8 flex flex-col w-full"
       >
         <FormField
           name="name"
