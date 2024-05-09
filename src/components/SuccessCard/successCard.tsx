@@ -1,14 +1,14 @@
 "use client";
 import { User } from "@/context/formContext/formContext";
 import { getObjecturl, getNameInitials } from "@/lib/utils";
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../UI/avatar";
 
 function SuccessCard() {
   const formData: User = JSON.parse(localStorage.getItem("formData") ?? "");
 
   return (
     <div className="bg-slate-700 h-screen flex justify-center items-center">
-      <div className="w-[90vw] max-sm:h-[90vh] bg-white shadow-xl border-0 border-lg flex flex-col p-4">
+      <div className="w-[60vw] max-sm:h-[90vh] bg-white shadow-xl border-0 border-lg flex flex-col p-4">
         <div className="w-full flex justify-center">
           <h3 className="text-xl font-bold">Form Submitted Successfully</h3>
         </div>

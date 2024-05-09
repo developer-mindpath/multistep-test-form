@@ -6,7 +6,7 @@ export type User = {
   email: string;
   password: string;
   profilePic: File;
-  age: number;
+  age: string;
   phoneNo: string;
   occupation: string;
   bio: string;
@@ -21,7 +21,7 @@ export const initialFormData: User = {
   email: "",
   password: "",
   profilePic: {} as File,
-  age: 18,
+  age: "18",
   phoneNo: "",
   occupation: "",
   bio: "",

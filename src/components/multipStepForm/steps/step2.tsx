@@ -47,16 +47,17 @@ function Step2(): ReactElement {
     mode: "onChange",
     defaultValues: {
       email: propertyForm.email,
-      age: propertyForm.age,
+      age: +propertyForm.age,
       phoneNo: propertyForm.phoneNo,
       occupation: propertyForm.occupation,
     },
   });
 
   function onSubmit(values: z.infer<typeof newUserFormSchema>) {
+    const upatedValues = { ...values, age: values.age.toString() };
     formContext.updatePropertyForm({
       ...propertyForm,
-      ...values,
+      ...upatedValues,
     });
     nextStep();
   }
@@ -92,7 +93,7 @@ function Step2(): ReactElement {
               <FormMessage />
               <FormControl>
                 <Input
-                  type="number"
+                  type="string"
                   {...field}
                   onChange={(event) => {
                     field.onChange(+event.target.value);

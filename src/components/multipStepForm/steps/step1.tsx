@@ -13,7 +13,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStepper } from "@/components/UI/stepper";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 /**
  * Step 1 of the form has name lastname , password , confirm password field
@@ -23,6 +24,9 @@ function Step1(): ReactElement {
   const formContext = useFormContext();
   const { propertyForm } = formContext;
   const { nextStep } = useStepper();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   const passwordValidation = new RegExp(
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
@@ -107,7 +111,22 @@ function Step1(): ReactElement {
               <FormLabel>Password</FormLabel>
               <FormMessage />
               <FormControl>
-                <Input {...field} />
+                <div className="relative">
+                  <Input type={showPassword ? "text" : "password"} {...field} />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
             </FormItem>
           )}
@@ -120,7 +139,25 @@ function Step1(): ReactElement {
               <FormLabel>Confirm Password</FormLabel>
               <FormMessage />
               <FormControl>
-                <Input {...field} />
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    {...field}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </Button>
+                </div>
               </FormControl>
             </FormItem>
           )}
